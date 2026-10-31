@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O Segredo das Velas Botânicas Premium | Mini App</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#FAF7F2',
+                            100: '#F4EDE4',
+                            200: '#E6D5C5',
+                            300: '#D1BBA7',
+                            400: '#C88A4B',
+                            500: '#A85822',
+                            600: '#8C5A32',
+                            700: '#5C351E',
+                            800: '#382E29',
+                            900: '#1C1512',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F4EDE4;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #C88A4B;
+            border-radius: 4px;
+        }
+        .glass-header {
+            background: rgba(28, 21, 18, 0.85);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-brand-900 text-brand-100 font-sans antialiased min-h-screen pb-24 md:pb-0 selection:bg-brand-400 selection:text-white">
+
+    <!-- BARRA DE PROGRESSO DE LEITURA -->
+    <div class="fixed top-0 left-0 w-full h-1 bg-brand-800 z-50">
+        <div id="scrollProgress" class="h-full bg-gradient-to-r from-brand-400 to-brand-500 transition-all duration-150 w-0"></div>
+    </div>
+
+    <!-- HEADER / NAVEGAÇÃO -->
+    <header class="fixed top-1 left-0 w-full glass-header border-b border-brand-700/50 z-40 px-4 py-3">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-full bg-brand-400/20 border border-brand-400 flex items-center justify-center text-brand-400">
+                    <i data-lucide="flame" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h1 class="font-serif text-lg font-bold tracking-wide text-brand-50 leading-tight">Velas Botânicas</h1>
+                    <p class="text-[10px] uppercase tracking-widest text-brand-300">Daniel Pinheiro Negócios Digitais</p>
+                </div>
+            </div>
+
+            <!-- Botões Rápidos -->
+            <div class="flex items-center space-x-2">
+                <button onclick="toggleCalcModal()" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-brand-700/60 hover:bg-brand-700 text-brand-200 border border-brand-600/40 text-xs font-medium transition">
+                    <i data-lucide="calculator" class="w-4 h-4 text-brand-400"></i>
+                    <span class="hidden sm:inline">Calculadora Precificação</span>
+                </button>
+                <a href="https://wa.me/55119748727896" target="_blank" class="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-full bg-emerald-700 hover:bg-emerald-600 text-white text-xs font-semibold shadow-lg shadow-emerald-900/30 transition">
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Falar no WhatsApp</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL (LAYOUT RESPONSIVO COM MENU LATERAL) -->
+    <div class="max-w-6xl mx-auto pt-20 px-4 md:px-6 flex flex-col md:flex-row gap-8">
+
+        <!-- NAVEGAÇÃO POR CAPÍTULOS (MENU LATERAL) -->
+        <aside class="w-full md:w-80 flex-shrink-0">
+            <div class="sticky top-24 bg-brand-800/80 border border-brand-700/60 rounded-2xl p-4 backdrop-blur-md">
+                <div class="flex items-center justify-between pb-3 mb-3 border-b border-brand-700/60">
+                    <span class="text-xs uppercase tracking-widest font-semibold text-brand-300 flex items-center gap-1.5">
+                        <i data-lucide="book-open" class="w-4 h-4 text-brand-400"></i> Sumário Estratégico
+                    </span>
+                    <span id="readingTime" class="text-[11px] text-brand-300">12 min leitura</span>
+                </div>
+
+                <nav class="space-y-1 custom-scrollbar max-h-[60vh] overflow-y-auto pr-1" id="chapterNav">
+                    <button onclick="scrollToChapter('cap-intro')" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-medium transition flex items-center justify-between text-brand-400 bg-brand-700/50 border border-brand-600/40">
+                        <span>Capa & Visão Geral</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="scrollToChapter('cap-1')" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-medium text-brand-200 hover:bg-brand-700/40 transition flex items-center justify-between">
+                        <span>Cap. I • Diagnóstico de Mercado</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="scrollToChapter('cap-2')" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-medium text-brand-200 hover:bg-brand-700/40 transition flex items-center justify-between">
+                        <span>Cap. II • Cera de Coco Pureza</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="scrollToChapter('cap-3')" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-medium text-brand-200 hover:bg-brand-700/40 transition flex items-center justify-between">
+                        <span>Cap. III • Pavio de Madeira (Crackle)</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="scrollToChapter('cap-4')" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-medium text-brand-200 hover:bg-brand-700/40 transition flex items-center justify-between">
+                        <span>Cap. IV • Latas Mandala & Florais</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="scrollToChapter('cap-5')" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-medium text-brand-200 hover:bg-brand-700/40 transition flex items-center justify-between">
+                        <span>Cap. V • Engenharia de Persona</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="scrollToChapter('cap-6')" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-medium text-brand-200 hover:bg-brand-700/40 transition flex items-center justify-between">
+                        <span>Cap. VI • Marketplace Sensorial</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="scrollToChapter('cap-7')" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-medium text-brand-200 hover:bg-brand-700/40 transition flex items-center justify-between">
+                        <span>Cap. VII • Parcerias B2B2C</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="scrollToChapter('cap-8')" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-medium text-brand-200 hover:bg-brand-700/40 transition flex items-center justify-between">
+                        <span>Cap. VIII • Escala & Recompra</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+                    <button onclick="scrollToChapter('cap-b2b-checklist')" class="nav-btn w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold text-brand-400 bg-brand-400/10 border border-brand-400/30 hover:bg-brand-400/20 transition flex items-center justify-between">
+                        <span class="flex items-center gap-1.5"><i data-lucide="check-square" class="w-3.5 h-3.5"></i> Checklist B2B</span>
+                        <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                    </button>
+                </nav>
+
+                <!-- CARD PROMO CONSULTORIA -->
+                <div class="mt-4 pt-4 border-t border-brand-700/60 bg-gradient-to-br from-brand-700/40 to-brand-800 rounded-xl p-3 border border-brand-600/30">
+                    <p class="text-[11px] text-brand-200 font-medium leading-relaxed mb-2">Precisa de ajuda para estruturar o seu ateliê?</p>
+                    <a href="https://wa.me/55119748727896" target="_blank" class="w-full py-2 px-3 rounded-lg bg-brand-400 hover:bg-brand-500 text-white font-semibold text-xs flex items-center justify-center gap-1.5 transition">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Sessão Estratégica
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ÁREA DE LEITURA DO E-BOOK -->
+        <main class="flex-1 space-y-12">
+
+            <!-- CAPA (CAP. INTRO) -->
+            <article id="cap-intro" class="scroll-mt-24 bg-brand-800/40 border border-brand-700/60 rounded-3xl overflow-hidden shadow-2xl">
+                <div class="relative h-72 sm:h-96">
+                    <img src="https://images.unsplash.com/photo-1603006905003-be475563bc59?auto=format&fit=crop&w=1200&q=80" alt="Vela artesanal botânica acesa" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brand-900 via-brand-900/60 to-transparent"></div>
+                    <div class="absolute bottom-6 left-6 right-6">
+                        <span class="px-3 py-1 rounded-full bg-brand-400/20 border border-brand-400 text-brand-300 text-[10px] font-semibold tracking-widest uppercase mb-3 inline-block">Guia Oficial de Posicionamento</span>
+                        <h2 class="font-serif text-3xl sm:text-5xl font-bold text-brand-50 leading-tight mb-2">O Segredo das Velas Botânicas Premium</h2>
+                        <p class="text-sm sm:text-base text-brand-200 font-light max-w-xl">Como transformar artesanato em artigo de luxo multissensorial, atrair clientes de alto valor e escalar suas vendas digitais.</p>
+                    </div>
+                </div>
+                <div class="p-6 sm:p-8 flex items-center justify-between border-t border-brand-700/60 bg-brand-900/50 text-xs text-brand-300">
+                    <span class="flex items-center gap-2"><i data-lucide="award" class="w-4 h-4 text-brand-400"></i> Curadoria & Estratégia</span>
+                    <strong class="text-brand-100 uppercase tracking-widest font-semibold">Daniel Pinheiro Negócios Digitais</strong>
+                </div>
+            </article>
+
+            <!-- CAPÍTULO I -->
+            <article id="cap-1" class="scroll-mt-24 bg-brand-800/30 border border-brand-700/50 rounded-3xl p-6 sm:p-10 space-y-6">
+                <div class="flex items-center justify-between border-b border-brand-700/50 pb-4">
+                    <span class="text-xs font-bold text-brand-400 uppercase tracking-widest">Capítulo I</span>
+                    <span class="text-xs text-brand-300">Diagnóstico de Mercado</span>
+                </div>
+
+                <h3 class="font-serif text-2xl sm:text-4xl text-brand-50 font-bold leading-snug">A Saturação do Mercado Comum vs. A Era da Experiência</h3>
+
+                <p class="text-brand-200 leading-relaxed text-sm sm:text-base">
+                    O mercado tradicional de velas artesanais enfrenta um dilema silencioso: a commoditização. Centenas de pequenas marcas entram diariamente no mercado vendendo velas simples de parafina petroquímica, competindo exclusivamente por preço em feiras locais e marketplaces genéricos.
+                </p>
+
+                <p class="text-brand-200 leading-relaxed text-sm sm:text-base">
+                    Entretanto, no topo da pirâmide consumidora, ocorre um movimento inverso. O público de alto poder aquisitivo não busca mais iluminação emergencial ou perfumação sintética agressiva. Ele busca <strong>rituais de desaceleração</strong>, bem-estar holístico e estética decorativa refinada para os seus ambientes.
+                </p>
+
+                <div class="bg-brand-800/80 border-l-4 border-brand-400 p-5 rounded-r-2xl space-y-2">
+                    <h4 class="text-sm font-bold text-brand-50 flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4 text-brand-400"></i> A Virada de Chave: Do Artesanato ao Objeto de Desejo</h4>
+                    <p class="text-xs sm:text-sm text-brand-200 leading-relaxed">
+                        Para transitar da venda informal para um negócio escalável e lucrativo, o seu produto precisa ser percebido não como uma "lembrancinha", mas como um <strong>artigo de autocuidado e luxo acessível</strong>. Este cliente busca produtos conscientes, biodegradáveis e está disposto a pagar até 4x mais quando reconhece ingredientes nobres.
+                    </p>
+                </div>
+            </article>
+
+            <!-- CAPÍTULO II -->
+            <article id="cap-2" class="scroll-mt-24 bg-brand-800/30 border border-brand-700/50 rounded-3xl p-6 sm:p-10 space-y-6">
+                <div class="flex items-center justify-between border-b border-brand-700/50 pb-4">
+                    <span class="text-xs font-bold text-brand-400 uppercase tracking-widest">Capítulo II</span>
+                    <span class="text-xs text-brand-300">Engenharia de Ingredientes</span>
+                </div>
+
+                <h3 class="font-serif text-2xl sm:text-4xl text-brand-50 font-bold leading-snug">A Supremacia da Cera Vegetal de Coco</h3>
+
+                <p class="text-brand-200 leading-relaxed text-sm sm:text-base">
+                    O primeiro grande pilar de diferenciação técnica do seu produto está na matéria-prima base. A vasta maioria das velas comerciais ainda utiliza parafina — um subproduto direto do refinamento do petróleo que, ao ser queimado, libera fumaça escura e resíduos tóxicos no ar interno das residências.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+                    <div class="bg-brand-800/60 p-4 rounded-2xl border border-brand-700/50">
+                        <i data-lucide="leaf" class="w-6 h-6 text-emerald-400 mb-2"></i>
+                        <h4 class="font-semibold text-sm text-brand-100 mb-1">Queima 100% Limpa</h4>
+                        <p class="text-xs text-brand-300">Blend de ceras vegetais (coco, arroz e palma) totalmente livre de toxinas e derivados de petróleo.</p>
+                    </div>
+                    <div class="bg-brand-800/60 p-4 rounded-2xl border border-brand-700/50">
+                        <i data-lucide="droplet" class="w-6 h-6 text-brand-400 mb-2"></i>
+                        <h4 class="font-semibold text-sm text-brand-100 mb-1">Ponto de Fusão Baixo</h4>
+                        <p class="text-xs text-brand-300">Cria uma piscina de cera cremosa que exala a essência suavemente sem queimá-la.</p>
+                    </div>
+                    <div class="bg-brand-800/60 p-4 rounded-2xl border border-brand-700/50">
+                        <i data-lucide="sun" class="w-6 h-6 text-amber-400 mb-2"></i>
+                        <h4 class="font-semibold text-sm text-brand-100 mb-1">Acabamento Aveludado</h4>
+                        <p class="text-xs text-brand-300">Superfície extremamente lisa e homogênea que remete à elegância e pureza visual.</p>
+                    </div>
+                </div>
+
+                <p class="text-xs text-brand-300 italic border-l-2 border-brand-400 pl-4 py-1">
+                    "Explicar a origem limpa da cera de coco não é apenas um detalhe técnico; é o argumento central que justifica o ticket elevado para clientes que priorizam a saúde da família."
+                </p>
+            </article>
+
+            <!-- CAPÍTULO III -->
+            <article id="cap-3" class="scroll-mt-24 bg-brand-800/30 border border-brand-700/50 rounded-3xl p-6 sm:p-10 space-y-6">
+                <div class="flex items-center justify-between border-b border-brand-700/50 pb-4">
+                    <span class="text-xs font-bold text-brand-400 uppercase tracking-widest">Capítulo III</span>
+                    <span class="text-xs text-brand-300">Inovação Multissensorial</span>
+                </div>
+
+                <h3 class="font-serif text-2xl sm:text-4xl text-brand-50 font-bold leading-snug">O Pavio de Madeira e o Efeito "Crackle"</h3>
+
+                <p class="text-brand-200 leading-relaxed text-sm sm:text-base">
+                    Enquanto a cera de coco atende ao olfato e à consciência ecológica, o <strong>pavio de madeira</strong> revoluciona a experiência auditiva e visual do cliente. Trata-se de uma inovação ainda pouco explorada no mercado nacional, representando um trunfo comercial gigantesco.
+                </p>
+
+                <div class="bg-gradient-to-r from-brand-800 to-brand-700/40 p-6 rounded-2xl border border-brand-600/40 space-y-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-brand-400/20 flex items-center justify-center text-brand-400">
+                            <i data-lucide="volume-2" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-brand-50 text-base">O Som que Vende: Magia da Lareira</h4>
+                            <p class="text-xs text-brand-300">Efeito sonoro Crackle Effect ao acender</p>
+                        </div>
+                    </div>
+                    <p class="text-xs sm:text-sm text-brand-200 leading-relaxed">
+                        Ao ser aceso, o pavio de madeira produz um crepitar sutil e ritmado, idêntico ao som de pequenos galhos queimando em uma lareira. Esse estímulo sonoro desencadeia imediatamente uma resposta de relaxamento no cérebro.
+                    </p>
+                </div>
+
+                <ul class="space-y-3 text-xs sm:text-sm text-brand-200">
+                    <li class="flex items-start gap-2.5">
+                        <i data-lucide="check-circle" class="w-4 h-4 text-brand-400 flex-shrink-0 mt-0.5"></i>
+                        <span><strong>Chama Horizontal Elegante:</strong> Distribuição uniforme de calor até as bordas da lata.</span>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <i data-lucide="check-circle" class="w-4 h-4 text-brand-400 flex-shrink-0 mt-0.5"></i>
+                        <span><strong>Apelo Minimalista & Rústico-Chique:</strong> Visual nobre que valoriza fotos e cenários de interiores.</span>
+                    </li>
+                </ul>
+            </article>
+
+            <!-- CAPÍTULO IV -->
+            <article id="cap-4" class="scroll-mt-24 bg-brand-800/30 border border-brand-700/50 rounded-3xl p-6 sm:p-10 space-y-6">
+                <div class="flex items-center justify-between border-b border-brand-700/50 pb-4">
+                    <span class="text-xs font-bold text-brand-400 uppercase tracking-widest">Capítulo IV</span>
+                    <span class="text-xs text-brand-300">Design & Ornamentação</span>
+                </div>
+
+                <h3 class="font-serif text-2xl sm:text-4xl text-brand-50 font-bold leading-snug">Latas Mandala & Topos Botânicos Esculpidos</h3>
+
+                <p class="text-brand-200 leading-relaxed text-sm sm:text-base">
+                    A primeira impressão de um produto premium ocorre antes mesmo de ser aceso. A escolha de <strong>latas metálicas ornamentadas com estampas mandala</strong> combinada com a adição de florais secos no topo eleva o valor percebido de forma instantânea.
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-brand-800/50 p-5 rounded-2xl border border-brand-700/60">
+                        <h4 class="font-semibold text-brand-100 text-sm mb-2 flex items-center gap-2">
+                            <i data-lucide="refresh-cw" class="w-4 h-4 text-brand-400"></i> Frasco Reutilizável
+                        </h4>
+                        <p class="text-xs text-brand-300 leading-relaxed">
+                            A lata mandala é encarada como um item decorativo permanente. Após o término da vela, ela é guardada como porta-joias, mantendo sua marca no dia a dia do cliente.
+                        </p>
+                    </div>
+                    <div class="bg-brand-800/50 p-5 rounded-2xl border border-brand-700/60">
+                        <h4 class="font-semibold text-brand-100 text-sm mb-2 flex items-center gap-2">
+                            <i data-lucide="flower" class="w-4 h-4 text-brand-400"></i> Curadoria de Flores Secas
+                        </h4>
+                        <p class="text-xs text-brand-300 leading-relaxed">
+                            Lavanda, botões de jasmim e pétalas de rosa agregam textura e aroma natural, transformando a superfície da cera em uma verdadeira escultura botânica.
+                        </p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- CAPÍTULO V -->
+            <article id="cap-5" class="scroll-mt-24 bg-brand-800/30 border border-brand-700/50 rounded-3xl p-6 sm:p-10 space-y-6">
+                <div class="flex items-center justify-between border-b border-brand-700/50 pb-4">
+                    <span class="text-xs font-bold text-brand-400 uppercase tracking-widest">Capítulo V</span>
+                    <span class="text-xs text-brand-300">Engenharia de Persona</span>
+                </div>
+
+                <h3 class="font-serif text-2xl sm:text-4xl text-brand-50 font-bold leading-snug">Mapeando a Cliente de Alto Poder Aquisitivo</h3>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm text-brand-200 border-collapse">
+                        <thead>
+                            <tr class="bg-brand-700/60 text-brand-100">
+                                <th class="p-3 font-semibold rounded-l-xl">Atributo</th>
+                                <th class="p-3 font-semibold rounded-r-xl">Mapeamento Estratégico</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-brand-700/40">
+                            <tr>
+                                <td class="p-3 font-semibold text-brand-400">Demografia</td>
+                                <td class="p-3">Mulheres de 30 a 55 anos, arquitetas, médicas, executivas e empreendedoras.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-brand-400">Estilo de Vida</td>
+                                <td class="p-3">Rotina intensa de trabalho; valorizam momentos de leitura, banhos relaxantes e jantares intimistas.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-brand-400">Dor Principal</td>
+                                <td class="p-3">Sobrecarga mental e estresse urbano. Dificuldade em desconectar no fim do dia.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold text-brand-400">Desejo Oculto</td>
+                                <td class="p-3">Criar um santuário pessoal de paz e presentar pessoas queridas com itens artesanais sofisticados.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+
+            <!-- CAPÍTULO VI -->
+            <article id="cap-6" class="scroll-mt-24 bg-brand-800/30 border border-brand-700/50 rounded-3xl p-6 sm:p-10 space-y-6">
+                <div class="flex items-center justify-between border-b border-brand-700/50 pb-4">
+                    <span class="text-xs font-bold text-brand-400 uppercase tracking-widest">Capítulo VI</span>
+                    <span class="text-xs text-brand-300">Marketplace Sensorial</span>
+                </div>
+
+                <h3 class="font-serif text-2xl sm:text-4xl text-brand-50 font-bold leading-snug">O Poder das Redes Sociais Sensoriais</h3>
+
+                <p class="text-brand-200 leading-relaxed text-sm sm:text-base">
+                    Vender um produto sensorial pela internet exige transformar aromas e sons em imagens e vídeos magnéticos. Foque em 3 pilares de produção digital:
+                </p>
+
+                <div class="space-y-3 text-xs sm:text-sm text-brand-200">
+                    <div class="p-4 rounded-xl bg-brand-800/40 border border-brand-700/40">
+                        <strong class="text-brand-400 block mb-1">1. Vídeos ASMR de Acendimento:</strong>
+                        Aproxime a câmera e o microfone ao acender o pavio de madeira em um cenário silencioso para captação do estalo.
+                    </div>
+                    <div class="p-4 rounded-xl bg-brand-800/40 border border-brand-700/40">
+                        <strong class="text-brand-400 block mb-1">2. Storytelling do Ritual:</strong>
+                        Grave sequências curtas mostrando a vela acesa ao lado de um livro, taça de vinho ou banho de imersão.
+                    </div>
+                    <div class="p-4 rounded-xl bg-brand-800/40 border border-brand-700/40">
+                        <strong class="text-brand-400 block mb-1">3. Bastidores Artesanais:</strong>
+                        Mostre a colocação delicada dos botânicos secos sobre a cera ainda morna.
+                    </div>
+                </div>
+            </article>
+
+            <!-- CAPÍTULO VII -->
+            <article id="cap-7" class="scroll-mt-24 bg-brand-800/30 border border-brand-700/50 rounded-3xl p-6 sm:p-10 space-y-6">
+                <div class="flex items-center justify-between border-b border-brand-700/50 pb-4">
+                    <span class="text-xs font-bold text-brand-400 uppercase tracking-widest">Capítulo VII</span>
+                    <span class="text-xs text-brand-300">Ecossistema B2B2C</span>
+                </div>
+
+                <h3 class="font-serif text-2xl sm:text-4xl text-brand-50 font-bold leading-snug">Parcerias Lucrativas de Alto Ticket</h3>
+
+                <p class="text-brand-200 leading-relaxed text-sm sm:text-base">
+                    Para garantir faturamento previsível, o ateliê deve atuar no modelo <strong>B2B2C (Business to Business to Consumer)</strong>:
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 bg-brand-800/60 rounded-2xl border border-brand-700/50">
+                        <i data-lucide="home" class="w-5 h-5 text-brand-400 mb-2"></i>
+                        <h4 class="font-bold text-xs sm:text-sm text-brand-100 mb-1">Arquitetura</h4>
+                        <p class="text-xs text-brand-300">Velas como kit de boas-vindas na entrega de chaves de imóveis novos.</p>
+                    </div>
+                    <div class="p-4 bg-brand-800/60 rounded-2xl border border-brand-700/50">
+                        <i data-lucide="sparkle" class="w-5 h-5 text-brand-400 mb-2"></i>
+                        <h4 class="font-bold text-xs sm:text-sm text-brand-100 mb-1">Spas & Salões VIP</h4>
+                        <p class="text-xs text-brand-300">Mostruário consignado aceso na recepção para estimular compra por impulso.</p>
+                    </div>
+                    <div class="p-4 bg-brand-800/60 rounded-2xl border border-brand-700/50">
+                        <i data-lucide="hotel" class="w-5 h-5 text-brand-400 mb-2"></i>
+                        <h4 class="font-bold text-xs sm:text-sm text-brand-100 mb-1">Hotéis Boutique</h4>
+                        <p class="text-xs text-brand-300">Experiência de turn-down e presença na boutique de souvenir do hotel.</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- CAPÍTULO VIII -->
+            <article id="cap-8" class="scroll-mt-24 bg-brand-800/30 border border-brand-700/50 rounded-3xl p-6 sm:p-10 space-y-6">
+                <div class="flex items-center justify-between border-b border-brand-700/50 pb-4">
+                    <span class="text-xs font-bold text-brand-400 uppercase tracking-widest">Capítulo VIII</span>
+                    <span class="text-xs text-brand-300">Escala & Recompra</span>
+                </div>
+
+                <h3 class="font-serif text-2xl sm:text-4xl text-brand-50 font-bold leading-snug">De Clientes Pontuais a Colecionadores</h3>
+
+                <p class="text-brand-200 leading-relaxed text-sm sm:text-base">
+                    Como a vela é um item consumível, o grande segredo da lucratividade está na alta taxa de recompra (LTV). Um cliente fiel compra de 4 a 8 vezes por ano através de:
+                </p>
+
+                <ul class="space-y-2 text-xs sm:text-sm text-brand-200">
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-400"></i> Lançamentos sazonais limitados (Outono, Primavera, Natal).</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-400"></i> Programa de Refill Sustentável em latas devolvidas.</li>
+                    <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-brand-400"></i> Unboxing memorável com cartão de cuidados com o pavio.</li>
+                </ul>
+            </article>
+
+            <!-- FERRAMENTA INTERATIVA: CHECKLIST B2B -->
+            <article id="cap-b2b-checklist" class="scroll-mt-24 bg-gradient-to-br from-brand-800 to-brand-900 border border-brand-500/40 rounded-3xl p-6 sm:p-10 space-y-6 shadow-2xl">
+                <div class="flex items-center justify-between border-b border-brand-700/50 pb-4">
+                    <span class="text-xs font-bold text-brand-400 uppercase tracking-widest flex items-center gap-1.5"><i data-lucide="check-square" class="w-4 h-4"></i> Ferramenta Prática</span>
+                    <span class="text-xs text-brand-300">Validação B2B</span>
+                </div>
+
+                <h3 class="font-serif text-2xl sm:text-3xl text-brand-50 font-bold">Checklist de Abordagem para Parcerias</h3>
+                <p class="text-xs sm:text-sm text-brand-200">Marque os requisitos concluídos antes de apresentar seu portfólio para um novo parceiro comercial:</p>
+
+                <div class="space-y-3 text-xs sm:text-sm" id="b2bChecklist">
+                    <label class="flex items-start gap-3 p-3.5 bg-brand-800/60 rounded-xl border border-brand-700/50 cursor-pointer hover:border-brand-500 transition">
+                        <input type="checkbox" class="mt-0.5 rounded text-brand-400 focus:ring-brand-400 bg-brand-900 border-brand-600">
+                        <span class="text-brand-200">Amostras prontas da lata mandala acesa com pavio de madeira crepitando.</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 bg-brand-800/60 rounded-xl border border-brand-700/50 cursor-pointer hover:border-brand-500 transition">
+                        <input type="checkbox" class="mt-0.5 rounded text-brand-400 focus:ring-brand-400 bg-brand-900 border-brand-600">
+                        <span class="text-brand-200">Tabela de precificação especial para compras em lote (mínimo 10 a 50 unidades).</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 bg-brand-800/60 rounded-xl border border-brand-700/50 cursor-pointer hover:border-brand-500 transition">
+                        <input type="checkbox" class="mt-0.5 rounded text-brand-400 focus:ring-brand-400 bg-brand-900 border-brand-600">
+                        <span class="text-brand-200">Cartão explicativo destacando a cera 100% vegetal de coco e a segurança da queima.</span>
+                    </label>
+                    <label class="flex items-start gap-3 p-3.5 bg-brand-800/60 rounded-xl border border-brand-700/50 cursor-pointer hover:border-brand-500 transition">
+                        <input type="checkbox" class="mt-0.5 rounded text-brand-400 focus:ring-brand-400 bg-brand-900 border-brand-600">
+                        <span class="text-brand-200">Proposta de margem ou comissão clara para o parceiro (ex: 20% a 30% nas vendas consignadas).</span>
+                    </label>
+                </div>
+            </article>
+
+            <!-- CALL TO ACTION FINAL -->
+            <article class="bg-gradient-to-r from-brand-700 via-brand-600 to-brand-700 rounded-3xl p-8 text-center space-y-4 shadow-2xl border border-brand-400/40">
+                <h3 class="font-serif text-3xl font-bold text-white">Transforme Seu Ateliê em Marca de Luxo</h3>
+                <p class="text-sm text-brand-100 max-w-lg mx-auto">Agende uma Sessão Estratégica Individual com Daniel Pinheiro para alinhar a precificação, catálogo e abordagens comerciais do seu negócio.</p>
+                <div class="pt-2">
+                    <a href="https://wa.me/55119748727896" target="_blank" class="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-xl transition transform hover:scale-105">
+                        <i data-lucide="message-circle" class="w-5 h-5"></i> Falar no WhatsApp (11) 97487-2789
+                    </a>
+                </div>
+            </article>
+
+        </main>
+
+    </div>
+
+    <!-- NAVEGAÇÃO INFERIOR PARA MOBILE -->
+    <div class="md:hidden fixed bottom-0 left-0 w-full bg-brand-900/95 border-t border-brand-700/80 backdrop-blur-lg px-4 py-2.5 z-40 flex items-center justify-around">
+        <button onclick="scrollToChapter('cap-intro')" class="flex flex-col items-center gap-1 text-[10px] text-brand-300">
+            <i data-lucide="home" class="w-4 h-4 text-brand-400"></i> Início
+        </button>
+        <button onclick="toggleCalcModal()" class="flex flex-col items-center gap-1 text-[10px] text-brand-300">
+            <i data-lucide="calculator" class="w-4 h-4 text-brand-400"></i> Calculadora
+        </button>
+        <button onclick="scrollToChapter('cap-b2b-checklist')" class="flex flex-col items-center gap-1 text-[10px] text-brand-300">
+            <i data-lucide="check-square" class="w-4 h-4 text-brand-400"></i> Checklist
+        </button>
+        <a href="https://wa.me/55119748727896" target="_blank" class="flex flex-col items-center gap-1 text-[10px] text-emerald-400 font-semibold">
+            <i data-lucide="message-circle" class="w-4 h-4"></i> WhatsApp
+        </a>
+    </div>
+
+    <!-- MODAL CALCULADORA DE PRECIFICAÇÃO LUXO -->
+    <div id="calcModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-brand-800 border border-brand-700/80 rounded-3xl max-w-md w-full p-6 space-y-5 relative shadow-2xl">
+            <button onclick="toggleCalcModal()" class="absolute top-4 right-4 text-brand-300 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="flex items-center gap-2">
+                <i data-lucide="calculator" class="w-5 h-5 text-brand-400"></i>
+                <h3 class="font-serif text-xl font-bold text-brand-50">Calculadora de Precificação Luxo</h3>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-brand-200 mb-1">Custo dos Materiais Por Vela (R$)</label>
+                    <input type="number" id="costMaterials" value="18.00" step="0.50" oninput="calculatePrice()" class="w-full bg-brand-900 border border-brand-700 rounded-xl px-3 py-2 text-brand-100 focus:outline-none focus:border-brand-400">
+                    <span class="text-[10px] text-brand-300">Cera de coco, lata mandala, pavio de madeira, essência e botânicos</span>
+                </div>
+                <div>
+                    <label class="block text-brand-200 mb-1">Embalagem & Unboxing (R$)</label>
+                    <input type="number" id="costPackaging" value="5.00" step="0.50" oninput="calculatePrice()" class="w-full bg-brand-900 border border-brand-700 rounded-xl px-3 py-2 text-brand-100 focus:outline-none focus:border-brand-400">
+                </div>
+                <div>
+                    <label class="block text-brand-200 mb-1">Margem de Lucro Desejada (%)</label>
+                    <input type="number" id="marginPercent" value="250" step="10" oninput="calculatePrice()" class="w-full bg-brand-900 border border-brand-700 rounded-xl px-3 py-2 text-brand-100 focus:outline-none focus:border-brand-400">
+                    <span class="text-[10px] text-brand-400">Posicionamento de Luxo sugere margens de 200% a 300%</span>
+                </div>
+            </div>
+
+            <div class="bg-brand-900/80 p-4 rounded-2xl border border-brand-700/60 space-y-2 text-center">
+                <span class="text-[11px] uppercase tracking-wider text-brand-300">Preço de Venda Sugerido</span>
+                <div id="suggestedPrice" class="font-serif text-3xl font-bold text-brand-400">R$ 80,50</div>
+                <p id="profitMarginText" class="text-[10px] text-emerald-400 font-semibold">Lucro estimado: R$ 57,50 por unidade</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT DE INTERATIVIDADE -->
+    <script>
+        // Inicializa os ícones do Lucide
+        lucide.createIcons();
+
+        // Barra de progresso de leitura
+        window.onscroll = function() {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("scrollProgress").style.width = scrolled + "%";
+        };
+
+        // Scroll suave para capítulos
+        function scrollToChapter(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
